@@ -2,9 +2,9 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var compression = require('compression');
 var cors = require('cors');
-var bcrypt = require('bcrypt-nodejs');
-
-const SECRET = '4a3e853f-72ca-474f-b92a-5045e21794cb';
+var http = require('http');
+var ws = require('ws');
+var wsManager = require('./wsManager');
 
 var app = express();
 app.use(compression());
@@ -22,6 +22,16 @@ var authenticate = require('./actions/authenticate');
 app.post('/authenticate', authenticate.post);
 
 var port = 8080;
-app.listen(port, function () {
-    console.log('Listening on port', port);
-});
+var server = http.createServer(app);
+var wsServer = new ws.Server({ server: server });
+server.listen(port, function () { console.log('Listening on port', port); });
+wsServer.on('connection', wsManager.initWebSocket);
+
+setInterval(() => {
+    wsManager.broadcast({
+        actionType: 'INCOMING_MESSAGE',
+        payload: {
+            gilad: Math.random()
+        }
+    });
+}, 1000);

@@ -9,9 +9,11 @@ import Lounge from './componenets/Lounge';
 import RegisterForm from './componenets/RegisterForm';
 import AuthenticateForm from './componenets/AuthenticateForm';
 import configureStore from './stores/store';
+import * as websocket from './utils/websocket';
 
 let store = configureStore();
 let history = syncHistoryWithStore(browserHistory, store);
+websocket.init(store);
 
 let validateAuthentication = (nextState, replace) => {
     var token = localStorage.getItem('token');

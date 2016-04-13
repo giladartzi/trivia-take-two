@@ -1,6 +1,7 @@
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
 var dataLayer = require('../dataLayer');
+
 const SECRET = '4a3e853f-72ca-474f-b92a-5045e21794cb';
 
 function post(req, res) {
@@ -17,8 +18,9 @@ function post(req, res) {
                         });
                     }
                     if (hash === user.password) {
-                        jwt.sign({ username: username }, user.salt, null, function(token) {
+                        jwt.sign({ id: user.id, username: username }, SECRET, null, function(token) {
                             res.json({
+                                id: user.id,
                                 username: username,
                                 token: token
                             });

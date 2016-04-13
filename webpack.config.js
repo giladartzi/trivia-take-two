@@ -17,6 +17,7 @@ module.exports = {
         path: './public/',
         filename: 'bundle.js'
     },
+    devtool: 'source-map',
     devServer: {
         inline: true,
         contentBase: './public/',

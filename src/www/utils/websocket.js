@@ -1,10 +1,8 @@
-import { AUTHENTICATE_SUCCESS } from '../actions/user'
-
 var store;
 var reconnectTimeout;
 
 function initWebSocket() {
-    let ws = new WebSocket('ws://localhost:8080');
+    let ws = new WebSocket(process.env.WS_HOST || 'ws://localhost:8080');
     ws.onopen = () => sendInitFrame(ws);
     ws.onclose = reconnect;
     ws.onerror = reconnect;

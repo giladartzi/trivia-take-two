@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === 'production') {
     plugins.push(new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }));
     plugins.push(new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }));
     plugins.push(new webpack.DefinePlugin({ 'process.env.REST_API_HOST': 'window.location.protocol + "//" + window.location.hostname + "/"' }));
+    plugins.push(new webpack.DefinePlugin({ 'process.env.WS_HOST': '"wss://" + window.location.hostname + "/"' }));
 }
 
 module.exports = {

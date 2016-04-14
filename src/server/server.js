@@ -1,3 +1,4 @@
+var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
 var compression = require('compression');
@@ -12,6 +13,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use(express.static('public'));
+app.get('*', function(req, res){
+    res.sendFile(path.resolve(__dirname, '../../public/index.html'));
+});
 
 var register = require('./actions/register');
 app.post('/register', register.post);

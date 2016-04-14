@@ -14,7 +14,7 @@ function removeLeadingSlash(str) {
 }
 
 function send(method, path, payload) {
-    let url = 'http://localhost:8080/' + removeLeadingSlash(path);
+    let url = (process.env.REST_API_HOST || 'http://localhost:8080/') + removeLeadingSlash(path);
     let options = {};
     let token = localStorage.getItem('token');
 

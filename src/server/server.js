@@ -30,7 +30,7 @@ app.post('/invite', invite.post);
 var acceptInvitation = require('./actions/acceptInvitation');
 app.post('/acceptInvitation', acceptInvitation.post);
 
-var port = 8080;
+var port = +process.env.PORT || 8080;
 var server = http.createServer(app);
 var wsServer = new ws.Server({ server: server });
 server.listen(port, function () { console.log('Listening on port', port); });

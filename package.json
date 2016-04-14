@@ -6,6 +6,8 @@
   "scripts": {
     "syncDb": "node src/server/syncDb.js",
     "start": "node src/server/server.js",
+    "build": "webpack",
+    "web": "webpack && node src/server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -50,5 +52,8 @@
   "devDependencies": {
     "jshint": "^2.9.1",
     "jshint-loader": "^0.8.3"
+  },
+  "engines": {
+    "node": "5.9.1"
   }
 }

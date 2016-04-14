@@ -11,9 +11,7 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/test', (req, res) => {
-    res.send('Good');
-});
+app.use(express.static('public'));
 
 var register = require('./actions/register');
 app.post('/register', register.post);

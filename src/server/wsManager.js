@@ -2,12 +2,12 @@ var utils = require('./utils');
 var values = require('lodash/values');
 var flatten = require('lodash/flatten');
 var without = require('lodash/without');
+var pickBy = require('lodash/pickBy');
+var isArray = require('lodash/isArray');
 
 var userIdToWebSockets = {};
 var wsIdToUserId = {};
 var webSocketId = 0;
-
-const SECRET = '4a3e853f-72ca-474f-b92a-5045e21794cb';
 
 function handleIncomingConnection(data, ws) {
     var userId = data.id;
@@ -50,10 +50,9 @@ function handleIncomingMessage(ws, message) {
     }
 
     if (json && json.token) {
-        utils.jwtVerify(json.token, SECRET)
+        utils.jwtVerify(json.token, utils.SECRET)
             .then(decoded => handleIncomingConnection(decoded, ws))
             .catch(err => console.error(err));
-
     }
 }
 
@@ -63,12 +62,28 @@ function initWebSocket(ws) {
     ws.on('error', () => removeWebSocket(ws));
 }
 
-function broadcast(message) {
-    var flat = flatten(values(userIdToWebSockets));
-    flat.forEach(ws => sendMessage(ws, message));
+function broadcast(message, exclude) {
+    var picked, list = exclude;
+
+    if (!isArray(exclude)) {
+        list = [exclude];
+    }
+
+    list = list.map(value => "" + value);
+
+    picked = pickBy(userIdToWebSockets, (ws, userId) => {
+        return list.indexOf(userId) === -1;
+    });
+
+    flatten(values(picked)).forEach(ws => sendMessage(ws, message));
+}
+
+function send(userId, message) {
+    userIdToWebSockets[userId].forEach(ws => sendMessage(ws, message));
 }
 
 module.exports = {
     initWebSocket,
-    broadcast
+    broadcast,
+    send
 };

@@ -16,6 +16,7 @@ function removeLeadingSlash(str) {
 function send(method, path, payload) {
     let url = 'http://localhost:8080/' + removeLeadingSlash(path);
     let options = {};
+    let token = localStorage.getItem('token');
 
     options.headers = {
         'Accept': 'application/json',
@@ -23,6 +24,10 @@ function send(method, path, payload) {
     };
     options.method = method;
     options.body = JSON.stringify(payload);
+    
+    if (token) {
+        options.headers.token = token;
+    }
 
     return fetch(url, options)
         .then(handleResponse);

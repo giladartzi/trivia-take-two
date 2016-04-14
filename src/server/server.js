@@ -21,17 +21,17 @@ app.post('/register', register.post);
 var authenticate = require('./actions/authenticate');
 app.post('/authenticate', authenticate.post);
 
+var availability = require('./actions/availability');
+app.post('/availability', availability.post);
+
+var invite = require('./actions/invite');
+app.post('/invite', invite.post);
+
+var acceptInvitation = require('./actions/acceptInvitation');
+app.post('/acceptInvitation', acceptInvitation.post);
+
 var port = 8080;
 var server = http.createServer(app);
 var wsServer = new ws.Server({ server: server });
 server.listen(port, function () { console.log('Listening on port', port); });
 wsServer.on('connection', wsManager.initWebSocket);
-
-setInterval(() => {
-    wsManager.broadcast({
-        actionType: 'INCOMING_MESSAGE',
-        payload: {
-            gilad: Math.random()
-        }
-    });
-}, 1000);

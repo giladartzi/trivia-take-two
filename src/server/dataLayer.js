@@ -25,6 +25,10 @@ var User = sequelize.define('user', {
     salt: {
         type: Sequelize.STRING,
         defaultValue: () => bcrypt.genSaltSync()
+    },
+    state: {
+        type: Sequelize.ENUM('OFFLINE', 'AVAILABLE', 'PENDING', 'IN_GAME'),
+        defaultValue: 'OFFLINE'
     }
 });
 

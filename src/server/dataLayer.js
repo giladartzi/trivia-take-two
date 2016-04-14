@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
 var bcrypt = require('bcrypt-nodejs');
 
-var sequelize = new Sequelize('postgres://postgres:1337@localhost:5432/trivia');
+var sequelize = new Sequelize(process.env.postgresConnectionString);
 
 var User = sequelize.define('user', {
     id: {

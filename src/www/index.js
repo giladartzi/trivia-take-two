@@ -10,6 +10,7 @@ import RegisterForm from './componenets/RegisterForm';
 import AuthenticateForm from './componenets/AuthenticateForm';
 import configureStore from './stores/store';
 import * as websocket from './utils/websocket';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 let store = configureStore();
 let history = syncHistoryWithStore(browserHistory, store);
@@ -45,4 +46,5 @@ const root = (
 
 const element = document.getElementById('triviaApp');
 
+injectTapEventPlugin();
 ReactDOM.render(root, element);

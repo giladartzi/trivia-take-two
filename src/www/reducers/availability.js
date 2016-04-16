@@ -24,9 +24,17 @@ let reducer = (state = { pending: false, availableUsers: [] }, action) => {
                 error: action.error.message
             });
         case actions.AVAILABLE_USER:
-            return Object.assign({}, state, {
-                availableUsers: [...state.availableUsers, action.payload.user]
-            });
+            var exists = state.availableUsers.filter((user) => user.id === action.payload.user.id).length > 0;
+
+            if (!exists) {
+                return Object.assign({}, state, {
+                    availableUsers: [...state.availableUsers, action.payload.user]
+                });
+            }
+            else {
+                return state;
+            }
+
         default:
             return state;
     }

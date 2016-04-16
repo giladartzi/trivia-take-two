@@ -1,5 +1,16 @@
 import React from 'react';
-import NavLink from './NavLink';
+
+import TextField from 'material-ui/lib/text-field';
+import Paper from 'material-ui/lib/paper';
+import RaisedButton from 'material-ui/lib/raised-button';
+
+const paperStyle = {
+    margin: '20px auto',
+    textAlign: 'center',
+    display: 'inline-block',
+    padding: '20px 40px'
+};
+
 
 export default class RegisterForm extends React.Component {
     constructor() {
@@ -12,23 +23,23 @@ export default class RegisterForm extends React.Component {
         event.preventDefault();
         
         this.props.onSubmit({
-            username: this.refs.username.value,
-            password: this.refs.password.value
+            username: this.refs.username.getValue(),
+            password: this.refs.password.getValue()
         });
     }
     
     render() {
         return (
-            <form onSubmit={this.onSubmit}>
-                <input type="text" ref="username" placeholder="Username" />
-                <br />
-                <input type="password" ref="password" placeholder="Password" />
-                <br />
-                <button type="submit">{this.props.submit || 'Submit'}</button>
-                <NavLink to={this.props.otherFormPath}>
-                    {this.props.otherFormText}
-                </NavLink>
-            </form>
+            <Paper style={paperStyle} zDepth={2}>
+                <form onSubmit={this.onSubmit}>
+                    <TextField hintText="" floatingLabelText="Username" ref="username" />
+                    <br />
+                    <TextField hintText="Use a strong one!" floatingLabelText="Password" type="password" ref="password" />
+                    <br />
+                    <br />
+                    <RaisedButton label={this.props.submit || 'Submit'} primary={true} type="submit" />
+                </form>
+            </Paper>
         );
     }
 };

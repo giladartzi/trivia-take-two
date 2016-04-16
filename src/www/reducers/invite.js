@@ -1,6 +1,6 @@
 import * as actions from '../actions/invite';
 
-let reducer = (state = { pending: false, invitedBy: null, invitationPending: false }, action) => {
+let reducer = (state = { pending: false, invitedBy: null, invitationPending: false, invitationAccepted: false }, action) => {
     switch (action.type) {
         case actions.INVITE_REQUEST:
             return Object.assign({}, state, {
@@ -26,7 +26,13 @@ let reducer = (state = { pending: false, invitedBy: null, invitationPending: fal
             });
         case actions.INVITATION_ACCEPTED:
             return Object.assign({}, state, {
-                invitationPending: false
+                invitationPending: false,
+                invitationAccepted: true
+            });
+        case actions.INVITATION_DENIED:
+            return Object.assign({}, state, {
+                invitationPending: false,
+                invitationAccepted: false
             });
         default:
             return state;

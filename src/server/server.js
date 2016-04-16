@@ -12,10 +12,12 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(express.static('public'));
-app.get('*', function(req, res){
-    res.sendFile(path.resolve(__dirname, '../../public/index.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('public'));
+    app.get('*', function(req, res){
+        res.sendFile(path.resolve(__dirname, '../../public/index.html'));
+    });
+}
 
 var register = require('./actions/register');
 app.post('/register', register.post);

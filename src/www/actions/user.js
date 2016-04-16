@@ -10,6 +10,8 @@ export const AUTHENTICATE_REQUEST = 'AUTHENTICATE_REQUEST';
 export const AUTHENTICATE_SUCCESS = 'AUTHENTICATE_SUCCESS';
 export const AUTHENTICATE_FAILURE = 'AUTHENTICATE_FAILURE';
 
+export const LOGOUT = 'LOGOUT';
+
 let registerRequest = ({ username, password }) => {
     return {
         type: REGISTER_REQUEST,
@@ -54,14 +56,21 @@ let authenticateFailure = (error) => {
     }
 };
 
-function handleToken (json, dispatch) {
+let logoutAction = () => {
+    return {
+        type: LOGOUT
+    }
+};
+
+let handleToken = (json, dispatch) => {
     if (json && json.token) {
         localStorage.setItem('token', json.token);
-        dispatch(push('/'))
+        localStorage.setItem('username', json.username);
+        dispatch(push('/'));
     }
 
     return json;
-}
+};
 
 export function register(dispatch, payload) {
     dispatch(registerRequest(payload));
@@ -79,4 +88,12 @@ export function authenticate(dispatch, payload) {
         .then(json => { dispatch(authenticateSuccess(json)); return json; })
         .then(json => handleToken(json, dispatch))
         .catch(error => dispatch(authenticateFailure(error)));
+}
+
+export function logout() {
+    return (dispatch) => {
+        localStorage.clear();
+        dispatch(logoutAction());
+        dispatch(push('/authenticate'));
+    }
 }

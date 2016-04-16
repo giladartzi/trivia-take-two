@@ -28,7 +28,8 @@ let mapStateToProps = (state) => {
     return {
         pending: state.availability.pending,
         state: state.availability.state,
-        availableUsers: state.availability.availableUsers
+        availableUsers: state.availability.availableUsers,
+        invitedBy: state.invite.invitedBy
     }
 };
 

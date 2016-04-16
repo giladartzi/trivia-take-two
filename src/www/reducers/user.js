@@ -44,6 +44,13 @@ let reducer = (state = { pending: false }, action) => {
                 token: null,
                 error: action.error.message
             });
+        case actions.LOGOUT:
+            return Object.assign({}, state, {
+                pending: false,
+                username: null,
+                token: null,
+                error: null
+            });
         default:
             return state;
     }

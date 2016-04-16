@@ -5,6 +5,7 @@ export const INVITE_SUCCESS = 'INVITE_SUCCESS';
 export const INVITE_FAILURE = 'INVITE_FAILURE';
 export const INVITATION = 'INVITATION';
 export const INVITATION_ACCEPTED = 'INVITATION_ACCEPTED';
+export const INVITATION_DENIED = 'INVITATION_DENIED';
 
 let inviteRequest = (payload) => {
     return {

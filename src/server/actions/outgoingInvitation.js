@@ -24,13 +24,13 @@ function inviteUser(inviter, invitee, res) {
         .then(() => {
             res.json({ success: true });
             wsManager.send(invitee, {
-                actionType: 'INVITATION',
+                actionType: 'INCOMING_INVITATION_RECEIVED',
                 payload: { inviter: inviter }
             });
         });
 }
 
-function handleInvite(decoded, req, res) {
+function handleOutgoingInvitation(decoded, req, res) {
     var inviter = pick(decoded, ['id', 'username']),
         invitee = req.body.invitee;
 
@@ -44,7 +44,7 @@ function handleInvite(decoded, req, res) {
 function post(req, res) {
     var token = req.headers.token;
     utils.jwtVerify(token, utils.SECRET)
-        .then(decoded => handleInvite(decoded, req, res))
+        .then(decoded => handleOutgoingInvitation(decoded, req, res))
         .catch(() => res.sendStatus(403));
 }
 

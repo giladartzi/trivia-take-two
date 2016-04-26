@@ -6,14 +6,22 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 
 import user from '../reducers/user';
 import availability from '../reducers/availability';
-import invite from '../reducers/invite';
+import incomingInvitation from '../reducers/incomingInvitation';
+import outgoingInvitation from '../reducers/outgoingInvitation';
 
 const loggerMiddleware = createLogger();
 const routerMw = routerMiddleware(browserHistory);
+const reducers = combineReducers({
+    user,
+    availability,
+    incomingInvitation,
+    outgoingInvitation,
+    routing: routerReducer
+});
 
 export default function configureStore(initialState) {
     return createStore(
-        combineReducers({ user, availability, invite, routing: routerReducer }),
+        reducers,
         initialState,
         applyMiddleware(
             thunkMiddleware,

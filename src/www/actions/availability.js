@@ -25,10 +25,12 @@ let availabilityFailure = (error) => {
     };
 };
 
-export function availability(dispatch) {
-    dispatch(availabilityRequest());
+export function availability() {
+    return (dispatch) => {
+        dispatch(availabilityRequest());
 
-    rest.post('/availability')
-        .then(json => dispatch(availabilitySuccess(json)))
-        .catch(error => dispatch(availabilityFailure(error)));
+        rest.post('/availability')
+            .then(json => dispatch(availabilitySuccess(json)))
+            .catch(error => dispatch(availabilityFailure(error)));
+    }
 }

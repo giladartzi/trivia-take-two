@@ -28,11 +28,11 @@ app.post('/authenticate', authenticate.post);
 var availability = require('./actions/availability');
 app.post('/availability', availability.post);
 
-var invite = require('./actions/invite');
-app.post('/invite', invite.post);
+var outgoingInvitation = require('./actions/outgoingInvitation');
+app.post('/outgoingInvitation', outgoingInvitation.post);
 
-var acceptInvitation = require('./actions/acceptInvitation');
-app.post('/acceptInvitation', acceptInvitation.post);
+var incomingInvitation = require('./actions/incomingInvitation');
+app.post('/incomingInvitation', incomingInvitation.post);
 
 var port = +process.env.PORT || 8080;
 var server = http.createServer(app);

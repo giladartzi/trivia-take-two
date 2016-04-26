@@ -5,3 +5,4 @@ public/vendor.bundle.js
 public/vendor.bundle.js.map
 .idea
 .env
+data/

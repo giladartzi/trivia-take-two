@@ -7,11 +7,11 @@ function handleAcceptInvitation(decoded, req, res) {
     var inviterId = req.body.inviterId,
         inviteeId = decoded.id;
 
-    dataLayer.Game.create({
+    /*dataLayer.Game.create({
         inviterId,
         inviteeId
     }).then((game) => {
-        let payload = {
+        var payload = {
             gameId: game.getDataValue('id'),
             gameState: game.getDataValue('state')
         };
@@ -22,26 +22,24 @@ function handleAcceptInvitation(decoded, req, res) {
             actionType: 'OUTGOING_INVITATION_ACCEPTED',
             payload
         });
-    });
+    });*/
 }
 
 function handleDenyInvitation(decoded, req, res) {
     var inviterId = req.body.inviterId,
-        inviteeId = decoded.id,
-        options = {},
-        values = {};
+        inviteeId = decoded.id;
 
-    values.state = 'AVAILABLE';
-    options.where = { id: [inviterId, inviteeId] };
-
-    dataLayer.User.update(values, options)
-        .then(() => {
-            res.json({ success: true });
-            wsManager.send(inviterId, {
-                actionType: 'OUTGOING_INVITATION_REJECTED',
-                payload: { success: true }
-            });
+    dataLayer.User.where({
+        _id: { $in: [inviterId, inviteeId] }
+    }).update({
+        state: 'AVAILABLE'
+    }).then(() => {
+        res.json({ success: true });
+        wsManager.send(inviterId, {
+            actionType: 'OUTGOING_INVITATION_REJECTED',
+            payload: { success: true }
         });
+    });
 }
 
 function handleInvitationReply(decoded, req, res) {

@@ -8,7 +8,7 @@ function post(req, res) {
         password = req.body.password;
 
     if (username && password) {
-        dataLayer.User.findOne({ where: { username: username } })
+        dataLayer.User.findOne({ username: username })
             .then((user) => {
                 bcrypt.hash(password, user.salt, null, function (err, hash) {
                     if (err || hash !== user.password) {

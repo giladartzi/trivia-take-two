@@ -1,97 +1,53 @@
-var Sequelize = require('sequelize');
+var uri = 'mongodb://localhost:27017/trivia';
+
+var mongoose = require('mongoose');
+var uniqueValidator = require('mongoose-unique-validator');
 var bcrypt = require('bcrypt-nodejs');
 
-var sequelize = new Sequelize(process.env.postgresConnectionString);
-
-var User = sequelize.define('user', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    username: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
-    },
-    password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        set: function (value) {
-            var salt = this.getDataValue('salt');
-            this.setDataValue('password', bcrypt.hashSync(value, salt))
-        }
-    },
-    salt: {
-        type: Sequelize.STRING,
-        defaultValue: () => bcrypt.genSaltSync()
-    },
-    state: {
-        type: Sequelize.ENUM('OFFLINE', 'AVAILABLE', 'PENDING', 'IN_GAME'),
-        defaultValue: 'OFFLINE'
-    }
+mongoose.connect(uri, function () {
+    //mongoose.connection.db.dropDatabase();
 });
 
-var Game = sequelize.define('game', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    inviterId: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-    },
-    inviteeId: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-    },
-    state: {
-        type: Sequelize.ENUM('ACTIVE', 'DONE', 'ON_HOLD'),
-        defaultValue: 'ACTIVE'
-    }
+var userSchema = mongoose.Schema({
+    username: { type: String, unique: true },
+    password: String,
+    salt: String,
+    state: { type: String, enum: ['OFFLINE', 'AVAILABLE', 'PENDING', 'IN_GAME'], default: 'OFFLINE' }
 });
 
-var Question = sequelize.define('question', {
-    text: {
-        type: Sequelize.STRING,
-        allowNull: false
-    }
+userSchema.pre('save', function (next) {
+    var salt = bcrypt.genSaltSync();
+    this.salt = salt;
+    this.password = bcrypt.hashSync(this.password, salt);
+    next();
 });
 
-var Answer = sequelize.define('answer', {
-    text: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    isCorrect: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-    }
+userSchema.plugin(uniqueValidator, {
+    message: '{PATH} x {VALUE} x {TYPE}'
 });
 
-var GameQuestion = sequelize.define('gameQuestion', {
-    state: {
-        type: Sequelize.ENUM('ANSWERED', 'UNANSWERED'),
-        defaultValue: 'UNANSWERED'
-    }
+userSchema.set('toJSON', {
+    virtuals: true
 });
 
-Question.hasMany(Answer);
-Answer.belongsTo(Question);
-Question.belongsToMany(Game, { through: 'GameQuestion' });
-Game.belongsToMany(Question, { through: 'GameQuestion' });
+var User = mongoose.model('User', userSchema);
 
-function sync() {
-    return sequelize.sync();
-}
+var answerSchema = mongoose.Schema({
+    text: String,
+    isCorrect: Boolean
+});
+
+var questionSchema = mongoose.Schema({
+    text: String,
+    answers: [{ type: mongoose.Schema.ObjectId, ref: 'Answer' }]
+});
+
+var Answer = mongoose.model('Answer', answerSchema);
+var Question = mongoose.model('Question', questionSchema);
+
 
 module.exports = {
     User,
-    Game,
-    Question,
     Answer,
-    GameQuestion,
-    sync
+    Question
 };

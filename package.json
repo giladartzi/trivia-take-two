@@ -32,8 +32,7 @@
     "jsonwebtoken": "^5.7.0",
     "lodash": "^4.9.0",
     "material-ui": "^0.15.0-alpha.2",
-    "pg": "^4.5.3",
-    "pg-hstore": "^2.3.2",
+    "mongoose-unique-validator": "^1.0.2",
     "react": "^0.14.8",
     "react-dom": "^0.14.8",
     "react-redux": "^4.4.2",
@@ -43,7 +42,6 @@
     "redux": "^3.4.0",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.0.1",
-    "sequelize": "^3.21.0",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1",
     "ws": "^1.1.0"

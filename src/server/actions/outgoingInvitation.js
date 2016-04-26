@@ -4,7 +4,7 @@ var wsManager = require('../wsManager');
 var pick = require('lodash/pick');
 
 function verifyUser(user) {
-    if (user.getDataValue('state') !== 'AVAILABLE') {
+    if (user.state !== 'AVAILABLE') {
         throw new Error('User is not available');
     }
 
@@ -13,21 +13,17 @@ function verifyUser(user) {
 
 function inviteUser(inviter, invitee, res) {
     // Update user(s) to PENDING
-    var options = {},
-        values = {};
-
-    values.state = 'PENDING';
-    options.where = { id: [inviter.id, invitee] };
-    options.returning = true;
-
-    dataLayer.User.update(values, options)
-        .then(() => {
-            res.json({ success: true });
-            wsManager.send(invitee, {
-                actionType: 'INCOMING_INVITATION_RECEIVED',
-                payload: { inviter: inviter }
-            });
+    dataLayer.User.where({
+        _id: { $in: [inviter.id, invitee] }
+    }).update({
+        state: 'PENDING'
+    }).then(() => {
+        res.json({ success: true });
+        wsManager.send(invitee, {
+            actionType: 'INCOMING_INVITATION_RECEIVED',
+            payload: { inviter: inviter }
         });
+    });
 }
 
 function handleOutgoingInvitation(decoded, req, res) {

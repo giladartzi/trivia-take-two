@@ -3,15 +3,16 @@ var dataLayer = require('../dataLayer');
 var wsManager = require('../wsManager');
 
 function getAvailableUsers(exclude) {
-    return dataLayer.User.findAll({
-        attributes: ['id', 'username', 'state'],
-        where: {
-            state: 'AVAILABLE',
-            id: {
-                $not: exclude
-            }
+    var criteria = {
+        state: 'AVAILABLE',
+        _id: {
+            $ne: exclude
         }
-    });
+    };
+
+    var fields = 'id username';
+    
+    return dataLayer.User.find(criteria, fields);
 }
 
 function handleAvailability(decoded, res) {
@@ -19,10 +20,7 @@ function handleAvailability(decoded, res) {
         values = {},
         user = { id: decoded.id, username: decoded.username };
 
-    values.state = 'AVAILABLE';
-    options.where = { id: user.id };
-
-    dataLayer.User.update(values, options)
+    dataLayer.User.findOneAndUpdate({ _id: user.id }, { state: 'AVAILABLE' })
         .then(() => getAvailableUsers(user.id))
         .then(availableUsers => {
             var message;
@@ -41,7 +39,7 @@ function handleAvailability(decoded, res) {
 
             // Inform all other users that a new user is available
             wsManager.broadcast(message, user.id);
-        });
+        }).catch(console.error.bind(console));
 }
 
 function post(req, res) {

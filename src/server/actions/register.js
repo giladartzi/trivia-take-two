@@ -7,14 +7,16 @@ module.exports = {
             password = req.body.password;
 
         if (username && password) {
-            dataLayer.User.create({
+            var user = new dataLayer.User({
                 username: username,
                 password: password
-            }).then(() => {
+            });
+            
+            user.save().then(() => {
                 authenticate.post(req, res);
             }).catch(ex => {
                 res.status(400).json({
-                    error: ex.errors[0].message
+                    error: ex.message
                 });
             });
         }

@@ -1,12 +1,25 @@
+var mongoose = require('mongoose');
 var dataLayer = require('./dataLayer');
-var values = require('lodash/values');
 
-var syncs = values(dataLayer).map(entity => {
-    if (typeof entity.sync === 'function') {
-        return entity.sync({force: true})
-    }
+var uri = 'mongodb://localhost:27017/trivia';
 
-    return Promise.resolve();
+function createAnswers(answers) {
+    return Promise.all(answers.map(answer => new dataLayer.Answer(answer).save()));
+}
+
+function createQuestion(question, answers) {
+    question.answers = answers;
+    return new dataLayer.Question(question).save();
+}
+
+mongoose.connection.once('open', function() {
+    mongoose.connection.db.dropDatabase();
+    console.log('Database dropped');
+
+    Promise.all(questions.map(question => {
+        return createAnswers(question.answers)
+            .then(answers => createQuestion(question, answers));
+    })).then(() => process.exit(1));
 });
 
 var questions = [];
@@ -40,35 +53,3 @@ questions.push({
         { text: "Lars Ulrich", isCorrect: false }
     ]
 });
-
-function insertAnswers(questionId, answers) {
-    return Promise.all(answers.map(answer => {
-        return dataLayer.Answer.create({
-            questionId: questionId,
-            text: answer.text,
-            isCorrect: answer.isCorrect
-        });
-    }));
-}
-
-function insertQuestion(question) {
-    return dataLayer.Question.create({
-        text: question.text
-    }).then(entity => {
-        return insertAnswers(entity.getDataValue('id'), question.answers);
-    });
-}
-
-function insertQuestions(questions) {
-    return Promise.all(questions.map(question => insertQuestion(question)));
-}
-
-
-Promise.all(syncs)
-    .then(() => insertQuestions(questions))
-    .then(() => dataLayer.sync())
-    .then(() => {
-        console.log('Done');
-        process.exit();
-    })
-    .catch(console.error.bind(console));

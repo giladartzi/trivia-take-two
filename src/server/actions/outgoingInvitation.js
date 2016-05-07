@@ -5,7 +5,7 @@ var pick = require('lodash/pick');
 
 function verifyUser(user) {
     if (user.state !== 'AVAILABLE') {
-        throw new Error('User is not available');
+        //throw new Error('User is not available');
     }
 
     return user;

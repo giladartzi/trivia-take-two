@@ -78,8 +78,14 @@ function broadcast(message, exclude) {
     flatten(values(picked)).forEach(ws => sendMessage(ws, message));
 }
 
-function send(userId, message) {
-    userIdToWebSockets[userId].forEach(ws => sendMessage(ws, message));
+function send(userIds, message) {
+    if (!isArray(userIds)) {
+        userIds = [userIds];
+    }
+    
+    userIds.forEach(userId => {
+        userIdToWebSockets[userId].forEach(ws => sendMessage(ws, message));
+    })
 }
 
 module.exports = {

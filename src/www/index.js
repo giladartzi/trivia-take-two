@@ -7,6 +7,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import TriviaApp from './componenets/TriviaApp';
 import Lounge from './componenets/Lounge';
 import RegisterForm from './componenets/RegisterForm';
+import Game from './componenets/Game';
 import AuthenticateForm from './componenets/AuthenticateForm';
 import configureStore from './stores/store';
 import * as websocket from './utils/websocket';
@@ -32,6 +33,11 @@ let validateNonAuthentication = (nextState, replace) => {
     }
 };
 
+let validateGame = (nextState, replace) => {
+    // TODO: Validate that game is active and has an ID
+    //return validateAuthentication(nextState, replace);
+};
+
 const root = (
     <Provider store={store}>
         <Router history={history}>
@@ -39,6 +45,7 @@ const root = (
                 <IndexRoute component={Lounge} onEnter={validateAuthentication} />
                 <Route path="register" component={RegisterForm} onEnter={validateNonAuthentication} />
                 <Route path="authenticate" component={AuthenticateForm} onEnter={validateNonAuthentication} />
+                <Route path="game" component={Game} onEnter={validateGame} />
             </Route>
         </Router>
     </Provider>

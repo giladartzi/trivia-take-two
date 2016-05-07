@@ -34,6 +34,9 @@ app.post('/outgoingInvitation', outgoingInvitation.post);
 var incomingInvitation = require('./actions/incomingInvitation');
 app.post('/incomingInvitation', incomingInvitation.post);
 
+var getQuestion = require('./actions/getQuestion');
+app.post('/getQuestion', getQuestion.post);
+
 var port = +process.env.PORT || 8080;
 var server = http.createServer(app);
 var wsServer = new ws.Server({ server: server });

@@ -3,6 +3,8 @@ var uri = 'mongodb://localhost:27017/trivia';
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
 var bcrypt = require('bcrypt-nodejs');
+var random = require('mongoose-random');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 mongoose.connect(uri, function () {
     //mongoose.connection.db.dropDatabase();
@@ -32,22 +34,52 @@ userSchema.set('toJSON', {
 
 var User = mongoose.model('User', userSchema);
 
-var answerSchema = mongoose.Schema({
+var answer = {
     text: String,
     isCorrect: Boolean
-});
+};
 
-var questionSchema = mongoose.Schema({
+var question = {
     text: String,
-    answers: [{ type: mongoose.Schema.ObjectId, ref: 'Answer' }]
-});
+    answers: [answer]
+};
 
-var Answer = mongoose.model('Answer', answerSchema);
+var questionSchema = mongoose.Schema(question);
+
+questionSchema.plugin(random);
+
 var Question = mongoose.model('Question', questionSchema);
 
+var answerMetaData = {
+    metaData: [{
+        user: { type: mongoose.Schema.ObjectId, ref: 'User' },
+        question: question,
+        isAnswered: Boolean,
+        isCorrect: Boolean,
+        timing: Number
+    }]
+};
+
+var gameSchema = mongoose.Schema({
+    questions: [question],
+    state: { type: String, enum: ['ACTIVE', 'INACTIVE'] },
+    numberOfQuestions: Number,
+    currentQuestion: {
+        answered: [Boolean],
+        index: Number
+    },
+    players: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+    answers: [answerMetaData]
+
+
+});
+
+gameSchema.plugin(deepPopulate);
+
+var Game = mongoose.model('Game', gameSchema);
 
 module.exports = {
     User,
-    Answer,
-    Question
+    Question,
+    Game
 };

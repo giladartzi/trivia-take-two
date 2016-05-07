@@ -8,6 +8,7 @@ import user from '../reducers/user';
 import availability from '../reducers/availability';
 import incomingInvitation from '../reducers/incomingInvitation';
 import outgoingInvitation from '../reducers/outgoingInvitation';
+import game from '../reducers/game';
 
 const loggerMiddleware = createLogger();
 const routerMw = routerMiddleware(browserHistory);
@@ -16,6 +17,7 @@ const reducers = combineReducers({
     availability,
     incomingInvitation,
     outgoingInvitation,
+    game,
     routing: routerReducer
 });
 
